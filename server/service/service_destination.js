@@ -207,4 +207,20 @@ router.get("/city", function (req, res) {
   });
 });
 
+router.post("/city/add", function (req, res) {
+  const title = req.body.title;
+  connection.query(
+    `insert into m_city_tabs (title) values ('${title}')`,
+    function (err, result, field) {
+      if (err) throw err;
+      else {
+        return res.status(200).json({
+          status: "success",
+          data: result,
+        });
+      }
+    }
+  );
+});
+
 module.exports = router;
