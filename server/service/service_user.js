@@ -63,9 +63,9 @@ router.post("/login", function (req, res) {
           data: null,
         });
       } else {
-        if (result[0].avatar != null)
-          result[0].avatar =
-            "http://" + process.env.DIRECTORY + result[0].avatar;
+        result.forEach((element) => {
+          element.avatar = "http://" + process.env.DIRECTORY + element.avatar;
+        });
         return res.status(200).json({
           status: "success",
           data: result[0],
