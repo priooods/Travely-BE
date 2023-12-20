@@ -163,12 +163,12 @@ router.get("/home", function (req, res) {
     `select * from m_destination_tabs limit 4`,
     function (err, result, field) {
       if (err) throw err;
-      else {
-        let arrayId = [];
-        result.forEach((element) => {
-          arrayId.push(element.id);
-          element.attachment = [];
-        });
+      let arrayId = [];
+      result.forEach((element) => {
+        arrayId.push(element.id);
+        element.attachment = [];
+      });
+      if (arrayId.length > 0) {
         connection.query(
           `select * from t_destination_attachment_tabs where m_destination_tabs_id in (${arrayId})`,
           function (err2, results, field2) {
@@ -190,6 +190,11 @@ router.get("/home", function (req, res) {
             }
           }
         );
+      } else {
+        return res.status(200).json({
+          status: "success",
+          data: [],
+        });
       }
     }
   );
