@@ -1,8 +1,8 @@
-import { Button } from "@nextui-org/react";
 import Rating from "react-rating";
 import startnone from "../assets/image/star_kosong.png";
 import startfull from "../assets/image/star_penuh.png";
-function CardGuideIndex({ image, stars, title, price, location }) {
+import { Link } from "react-router-dom";
+function CardGuideIndex({ id, image, stars, title, price, location }) {
   return (
     <div>
       <div className="border h-full w-full shadow-xl">
@@ -14,8 +14,10 @@ function CardGuideIndex({ image, stars, title, price, location }) {
           />
         </div>
         <div className="px-4 py-3">
-          <p className="text-start font-popsemibold text-lg mt-1">{title}</p>
-          <div className="mt-5 text-sm font-popregular">
+          <p className="text-start font-popsemibold text-lg mt-1 text-[#2e97a7]">
+            {title}
+          </p>
+          <div className="mt-3 text-sm font-popregular">
             <p className="text-red-500 font-popmedium">Rp.{price} / Orang</p>
             <p className="text-xs text-slate-500">{location}</p>
             <Rating
@@ -27,12 +29,14 @@ function CardGuideIndex({ image, stars, title, price, location }) {
             ></Rating>
           </div>
           <div className="mt-3 flex justify-end">
-            <Button
-              className="bg-[#2e97a7] text-white font-popmedium text-xs"
-              size="sm"
-            >
-              Lihat Detail
-            </Button>
+            <Link to={`/detail-guide/${id}`}>
+              <div
+                className="bg-[#2e97a7] px-3 py-1 rounded-lg text-white font-popmedium text-xs"
+                size="sm"
+              >
+                Lihat Detail
+              </div>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,15 +1,55 @@
 import bggunung from "../../../assets/image/foto_gunung.jpeg";
-import { Input, Button } from "@nextui-org/react";
+import {
+  Input,
+  Button,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalBody,
+} from "@nextui-org/react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import client from "../../../service/services";
 function IndexRegister() {
+  const navigate = useNavigate();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [fullname, setFullname] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone, setPhone] = useState("");
 
   const toggleVisibility = () => setIsVisible(!isVisible);
+
+  function register() {
+    setIsLoading(true);
+    client
+      .post("/user/register", {
+        fullname: fullname,
+        nickname: nickname,
+        email: email,
+        password: password,
+        phone: parseInt(phone),
+      })
+      .then((res) => {
+        setTimeout(() => {
+          setIsLoading(false);
+          onOpen();
+        }, 1000);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
+  }
+  function goLogin() {
+    onOpenChange();
+    navigate("/login");
+  }
   return (
     <div>
-      <div className="relative flex justify-center items-center h-screen w-full">
+      <div className="relative flex justify-center items-center h-screen w-full md:pt-[56px]">
         <img
           className="absolute w-full h-screen left-0 right-0 top-0 bottom-0"
           src={bggunung}
@@ -25,6 +65,8 @@ function IndexRegister() {
               type="text"
               variant="bordered"
               placeholder="Fullname"
+              value={fullname}
+              onValueChange={setFullname}
             />
             <Input
               size="sm"
@@ -32,6 +74,8 @@ function IndexRegister() {
               variant="bordered"
               placeholder="Nickname"
               className="mt-4"
+              value={nickname}
+              onValueChange={setNickname}
             />
             <Input
               size="sm"
@@ -39,11 +83,15 @@ function IndexRegister() {
               variant="bordered"
               placeholder="Email"
               className="mt-4"
+              value={email}
+              onValueChange={setEmail}
             />
             <Input
               variant="bordered"
               placeholder="Password"
               size="sm"
+              value={password}
+              onValueChange={setPassword}
               endContent={
                 <button
                   className="focus:outline-none"
@@ -65,6 +113,8 @@ function IndexRegister() {
               type="number"
               variant="bordered"
               placeholder="Nomor Handphone"
+              value={phone}
+              onValueChange={setPhone}
               className="mt-4"
               startContent={<div>+62</div>}
             />
@@ -78,6 +128,8 @@ function IndexRegister() {
             </p>
             <Button
               size="sm"
+              onClick={register}
+              isLoading={isLoading}
               className=" bg-[#2e97a7] text-white font-popmedium w-40 text-lg h-9 shadow-xl"
             >
               Sign Up
@@ -93,6 +145,32 @@ function IndexRegister() {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        hideCloseButton
+        backdrop="blur"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <ModalBody>
+              <div className="text-center py-4">
+                <h1 className="text-lg font-popsemibold text-[#2e97a7]">
+                  Happy! You have successfully registered
+                </h1>
+                <p>Please Log In to be able to use it out service</p>
+                <Button
+                  size="sm"
+                  onClick={goLogin}
+                  className=" bg-[#2e97a7] text-white font-popmedium w-40 mt-8 text-lg h-9 shadow-xl"
+                >
+                  Ok
+                </Button>
+              </div>
+            </ModalBody>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

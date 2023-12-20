@@ -22,7 +22,10 @@ function App() {
       </div>
       <div
         className={
-          location.pathname === "/login" || location.pathname === "/signup"
+          location.pathname === "/login" ||
+          location.pathname === "/signup" ||
+          location.pathname === "/profile/detail" ||
+          location.pathname === "/profile/order"
             ? "hidden"
             : "block"
         }

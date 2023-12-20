@@ -76,37 +76,48 @@ router.delete("/delete/:id", function (req, res) {
 });
 
 router.get("/", function (req, res) {
-  connection.query(
-    `select * from m_destination_tabs`,
-    function (err, result, field) {
-      if (err) throw err;
-      else {
-        result.forEach((element) => {
-          element.attachment = [];
-        });
-        connection.query(
-          `select * from t_destination_attachment_tabs`,
-          function (err2, results, field2) {
-            if (err2) throw err2;
-            else {
-              result.forEach((element) => {
-                results.forEach((item) => {
-                  if (item.m_destination_tabs_id == element.id) {
-                    item.attachment = process.env.DIRECTORY + item.attachment;
-                    element.attachment.push(item);
-                  }
-                });
+  const paramsRegion = req.query.region;
+  const paramsSearch = req.query.search;
+  let urls = `select * from m_destination_tabs`;
+  if (paramsRegion) {
+    urls = `select * from m_destination_tabs where m_city_tabs_id like '%${paramsRegion}%'`;
+  }
+  if (paramsSearch) {
+    urls = `select * from m_destination_tabs where title like '%${paramsSearch}%'`;
+  }
+  if (paramsRegion && paramsSearch) {
+    urls = `select * from m_destination_tabs where m_city_tabs_id like '%${paramsRegion}%' or title like '%${paramsSearch}%'`;
+  }
+  connection.query(urls, function (err, result, field) {
+    if (err) throw err;
+    else {
+      console.log(urls);
+      result.forEach((element) => {
+        element.attachment = [];
+      });
+      connection.query(
+        `select * from t_destination_attachment_tabs`,
+        function (err2, results, field2) {
+          if (err2) throw err2;
+          else {
+            result.forEach((element) => {
+              results.forEach((item) => {
+                if (item.m_destination_tabs_id == element.id) {
+                  item.attachment =
+                    "http://" + process.env.DIRECTORY + item.attachment;
+                  element.attachment.push(item);
+                }
               });
-              return res.status(200).json({
-                status: "success",
-                data: result,
-              });
-            }
+            });
+            return res.status(200).json({
+              status: "success",
+              data: result,
+            });
           }
-        );
-      }
+        }
+      );
     }
-  );
+  });
 });
 
 router.get("/detail/:id", function (req, res) {
@@ -127,7 +138,10 @@ router.get("/detail/:id", function (req, res) {
               result.forEach((element) => {
                 results.forEach((item) => {
                   if (item.m_destination_tabs_id == element.id) {
-                    item.attachment = process.env.DIRECTORY + item.attachment;
+                    item.original =
+                      "http://" + process.env.DIRECTORY + item.attachment;
+                    item.thumbnail =
+                      "http://" + process.env.DIRECTORY + item.attachment;
                     element.attachment.push(item);
                   }
                 });
@@ -142,6 +156,55 @@ router.get("/detail/:id", function (req, res) {
       }
     }
   );
+});
+
+router.get("/home", function (req, res) {
+  connection.query(
+    `select * from m_destination_tabs limit 4`,
+    function (err, result, field) {
+      if (err) throw err;
+      else {
+        let arrayId = [];
+        result.forEach((element) => {
+          arrayId.push(element.id);
+          element.attachment = [];
+        });
+        connection.query(
+          `select * from t_destination_attachment_tabs where m_destination_tabs_id in (${arrayId})`,
+          function (err2, results, field2) {
+            if (err2) throw err2;
+            else {
+              result.forEach((element) => {
+                results.forEach((item) => {
+                  if (item.m_destination_tabs_id == element.id) {
+                    item.attachment =
+                      "http://" + process.env.DIRECTORY + item.attachment;
+                    element.attachment.push(item);
+                  }
+                });
+              });
+              return res.status(200).json({
+                status: "success",
+                data: result,
+              });
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+router.get("/city", function (req, res) {
+  connection.query(`select * from m_city_tabs`, function (err, result, field) {
+    if (err) throw err;
+    else {
+      return res.status(200).json({
+        status: "success",
+        data: result,
+      });
+    }
+  });
 });
 
 module.exports = router;

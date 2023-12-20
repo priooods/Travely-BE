@@ -8,6 +8,10 @@ import IndexGuide from "../view/guide";
 import IndexRegister from "../view/auth/register";
 import IndexTerms from "../view/terms";
 import IndexDetailDestinasi from "../view/detail_destination";
+import IndexDetailGuide from "../view/detail_guide";
+import IndexProfile from "../view/profile";
+import IndexProfileDetail from "../view/profile/index_profile";
+import IndexOrderDetail from "../view/profile/index_order";
 function RouterConfig() {
   return (
     <BrowserRouter>
@@ -24,6 +28,11 @@ function RouterConfig() {
             path="detail-destinasi/:id"
             element={<IndexDetailDestinasi />}
           ></Route>
+          <Route path="detail-guide/:id" element={<IndexDetailGuide />}></Route>
+          <Route path="profile" element={<IndexProfile />}>
+            <Route exact path="detail" element={<IndexProfileDetail />}></Route>
+            <Route path="order" element={<IndexOrderDetail />}></Route>
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

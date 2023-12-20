@@ -1,51 +1,42 @@
-import imgs from "../../assets/image/museum_tsunami.jpeg";
+import { useEffect, useState } from "react";
 import ImageGallery from "react-image-gallery";
+import client from "../../service/services";
+import { useParams } from "react-router-dom";
 function IndexDetailDestinasi() {
-  const images = [
-    {
-      original: imgs,
-      thumbnail: imgs,
-      thumbnailHeight: 300,
-      originalClass: "h-[450px]",
-    },
-    {
-      original: imgs,
-      thumbnail: imgs,
-      thumbnailHeight: 300,
-      originalClass: "h-[450px]",
-    },
-    {
-      original: imgs,
-      thumbnail: imgs,
-      thumbnailHeight: 300,
-      originalClass: "h-[450px]",
-    },
-  ];
+  let { id } = useParams();
+  const [request, setRequest] = useState(true);
+  const [detail, setDetail] = useState(null);
+
+  useEffect(() => {
+    if (request) {
+      client
+        .get("/destination/detail/" + id)
+        .then((res) => {
+          setDetail(res.data.data);
+        })
+        .catch((err) => console.log(err));
+    }
+    return () => setRequest(false);
+  });
+
   return (
     <div className="bg-slate-300 w-full">
       <div className="w-[70%] mx-auto bg-white min-h-screen py-14 px-20">
-        <p className="font-bold text-3xl mb-10">Tsunami Museum</p>
+        <p className="font-bold text-3xl mb-10">{detail?.title}</p>
         <ImageGallery
-          items={images}
+          items={detail?.attachment ?? []}
           showNav={false}
           showPlayButton={false}
           autoPlay
         />
         <div className="md:mt-12 text-start">
-          <p className="">
-            The Tsunami Museum is located on Jalan Sultan Iskandar Muda, Banda
-            Aceh city. The designer of this museum was Mr Ridwan Kamil who
-            served as Governor of West Java. The purpose of this museum is to
-            commemorate the earthquake that caused the tsunami in 2004, apart
-            from that it is also an educational center.
-          </p>
+          <p className="">{detail?.description}</p>
           <p className="mt-10 font-bold">Facility</p>
           <ul>
-            <li>Mineral Water</li>
-            <li>Parking</li>
+            <li>{detail?.facility}</li>
           </ul>
           <p className="mt-10 font-bold">Ticket Price Details</p>
-          <p className=" text-green-600">Rp. 5.000,-/Person</p>
+          <p className=" text-green-600">Rp. {detail?.price},-/Person</p>
         </div>
       </div>
     </div>
