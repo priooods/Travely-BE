@@ -17,7 +17,7 @@ function IndexDetailGuide() {
   let { id } = useParams();
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { isWarning, setWarning } = useState(false);
+  const [isWarning, setWarning] = useState(false);
   const [request, setRequest] = useState(true);
   const [booking, setBooking] = useState(null);
   const [detail, setDetail] = useState(null);
@@ -39,6 +39,8 @@ function IndexDetailGuide() {
   function goLogin() {
     navigate("/login");
   }
+
+
   function bookingNow() {
     client
       .post("/order/add", {
