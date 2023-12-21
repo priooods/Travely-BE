@@ -219,12 +219,7 @@ function IndexDetailGuide() {
           )}
         </ModalContent>
       </Modal>
-      <Modal
-        isOpen={isWarning}
-        onOpenChange={setWarning(!isWarning)}
-        hideCloseButton
-        backdrop="blur"
-      >
+      <Modal isOpen={isWarning} hideCloseButton backdrop="blur">
         <ModalContent>
           {(onClose) => (
             <ModalBody>
