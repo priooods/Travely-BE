@@ -17,6 +17,7 @@ function IndexDetailGuide() {
   let { id } = useParams();
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isWarning, onWarning, onWarningChange } = useDisclosure();
   const [request, setRequest] = useState(true);
   const [booking, setBooking] = useState(null);
   const [detail, setDetail] = useState(null);
@@ -35,17 +36,24 @@ function IndexDetailGuide() {
   function goProfile() {
     navigate("/profile/order");
   }
+  function goLogin() {
+    navigate("/login");
+  }
   function bookingNow() {
-    client
-      .post("/order/add", {
-        user_tabs_id: localStorage.getItem("isId"),
-        m_guide_tabs_id: id,
-        order_date: booking,
-      })
-      .then((res) => {
-        onOpen();
-      })
-      .catch((err) => console.log(err));
+    if (localStorage.getItem("isId") && localStorage.getItem("isLogin")) {
+      client
+        .post("/order/add", {
+          user_tabs_id: localStorage.getItem("isId"),
+          m_guide_tabs_id: id,
+          order_date: booking,
+        })
+        .then((res) => {
+          onOpen();
+        })
+        .catch((err) => console.log(err));
+    } else {
+      onWarning();
+    }
   }
   return (
     <div className="bg-slate-200">
@@ -200,6 +208,32 @@ function IndexDetailGuide() {
                   className=" bg-[#2e97a7] text-white font-popmedium w-40 mt-8 text-lg h-9 shadow-xl"
                 >
                   Ok
+                </Button>
+              </div>
+            </ModalBody>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isWarning}
+        onOpenChange={onWarningChange}
+        hideCloseButton
+        backdrop="blur"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <ModalBody>
+              <div className="text-center py-4">
+                <h1 className="text-lg font-popsemibold text-[#2e97a7]">
+                  Oopss ! You must login first
+                </h1>
+                <p>Sorry.. you cannot order guide if you not login first</p>
+                <Button
+                  size="sm"
+                  onClick={goLogin}
+                  className=" bg-red-500 text-white font-popmedium w-40 mt-8 text-lg h-9 shadow-xl"
+                >
+                  Login First
                 </Button>
               </div>
             </ModalBody>
