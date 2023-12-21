@@ -40,20 +40,16 @@ function IndexDetailGuide() {
     navigate("/login");
   }
   function bookingNow() {
-    if (localStorage.getItem("isId") && localStorage.getItem("isLogin")) {
-      client
-        .post("/order/add", {
-          user_tabs_id: localStorage.getItem("isId"),
-          m_guide_tabs_id: id,
-          order_date: booking,
-        })
-        .then((res) => {
-          onOpen();
-        })
-        .catch((err) => console.log(err));
-    } else {
-      setWarning(true);
-    }
+    client
+      .post("/order/add", {
+        user_tabs_id: localStorage.getItem("isId"),
+        m_guide_tabs_id: id,
+        order_date: booking,
+      })
+      .then((res) => {
+        onOpen();
+      })
+      .catch((err) => console.log(err));
   }
   return (
     <div className="bg-slate-200">
@@ -178,7 +174,16 @@ function IndexDetailGuide() {
           <div className="flex justify-end mt-16">
             <Button
               className="bg-[#2e97a7] text-white font-popsemibold"
-              onClick={bookingNow}
+              onClick={() => {
+                if (
+                  localStorage.getItem("isId") &&
+                  localStorage.getItem("isLogin")
+                ) {
+                  bookingNow();
+                } else {
+                  setWarning(true);
+                }
+              }}
             >
               Booking Now
             </Button>
