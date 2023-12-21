@@ -17,7 +17,7 @@ function IndexDetailGuide() {
   let { id } = useParams();
   const navigate = useNavigate();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { isWarning, onWarning, onWarningChange } = useDisclosure();
+  const { isWarning, setWarning } = useState(false);
   const [request, setRequest] = useState(true);
   const [booking, setBooking] = useState(null);
   const [detail, setDetail] = useState(null);
@@ -52,7 +52,7 @@ function IndexDetailGuide() {
         })
         .catch((err) => console.log(err));
     } else {
-      onWarning();
+      setWarning(true);
     }
   }
   return (
@@ -216,7 +216,7 @@ function IndexDetailGuide() {
       </Modal>
       <Modal
         isOpen={isWarning}
-        onOpenChange={onWarningChange}
+        onOpenChange={setWarning(!isWarning)}
         hideCloseButton
         backdrop="blur"
       >
